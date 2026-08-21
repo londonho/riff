@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable, StyleSheet } from 'react-native';
+import theme from '../theme';
 
 export default function SongCard({ title, artist, album, onPress }) {
     return (
@@ -13,22 +14,20 @@ export default function SongCard({ title, artist, album, onPress }) {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#fbd1d1',
+        backgroundColor: theme.colors.background,
+        borderWidth: 5,
+        borderColor: theme.colors.border,
         padding: 10,
         margin: 10,
-        borderRadius: 5,
-        rounded: 10,
+        borderRadius: theme.radius.md,
     },
     title: {
-        fontWeight: 'bold',
-        fontSize: 16,
+        ...theme.type.h3
     },
     artist: {
-        fontSize: 14,
-        color: '#666',
+        ...theme.type.body
     },
     album: {
-        fontSize: 12,
-        color: '#999',
+        ...theme.type.small
     },
 });
