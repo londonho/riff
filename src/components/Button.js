@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         backgroundColor: theme.colors.brand,
     },
     secondary: {
-        backgroundColor: theme.colors.surface,
+        backgroundColor: theme.colors.card,
         borderWidth: 1,
         borderColor: theme.colors.border,
     },
@@ -49,12 +49,12 @@ const styles = StyleSheet.create({
     },
     label: {
         ...theme.type.body,
-        color: theme.colors.surface,
+        color: theme.colors.onBrand,
     },
     labelSecondary: {
         color: theme.colors.text,
     },
     labelDisabled: {
-        color: theme.colors.surface,
+        color: theme.colors.onBrand,
     },
 });

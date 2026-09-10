@@ -1,10 +1,11 @@
 export const colors = { 
     brand: '#0b554b',
+    onBrand: '#FFFFFF',
     background: '#F1F1F1',
+    card: '#FFFFFF',
     text: '#1a1a1a',
     textMuted: '#6b6b6b',
     border: '#e3c6c6',
-    surface: '#ed3232',
 };
 
 export const radius = {

@@ -33,7 +33,7 @@ export async function searchSongs(term, { limit = 50 } = {}) {
     let res;
     try {
         res = await fetch(url);
-    } catch (NetworkError) {
+    } catch (err) {
         const e = new Error('Network Error: ' + NetworkError.message);
         e.userMessage = 'Failed to fetch songs from iTunes. Please try again later.';
         throw e;
@@ -52,7 +52,8 @@ export async function searchSongs(term, { limit = 50 } = {}) {
         e.userMessage = 'Failed to parse text from iTunes. Please try again later.';
         throw e;
     }
-    return deDupeTracks(jsonData.results.map(normalizeTrack).filter(track => track !== null));
+    const rows = Array.isArray(jsonData?.results) ? jsonData.results : [];
+    return deDupeTracks(rows.map(normalizeTrack).filter(track => track !== null));
 }
 
 function deDupeTracks(tracks) {
