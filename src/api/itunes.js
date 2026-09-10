@@ -25,15 +25,16 @@ function buildSearchURL(term, limit) {
     return ITUNES_SEARCH_ENDPOINT + `?term=${encodeURIComponent(term)}&entity=song&media=music&limit=${limit}`;
 }
 
-export async function searchSongs(term, { limit = 50 } = {}) {
+export async function searchSongs(term, { limit = 50, signal } = {}) {
     if (term.trim().length < 2) {
         return [];
     }
     const url = buildSearchURL(term.trim(), limit);
     let res;
     try {
-        res = await fetch(url);
+        res = await fetch(url, { signal });
     } catch (err) {
+        if (err.name === 'AbortError') throw err;
         const e = new Error('Network Error: ' + NetworkError.message);
         e.userMessage = 'Failed to fetch songs from iTunes. Please try again later.';
         throw e;

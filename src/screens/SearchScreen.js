@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React from 'react';
 import {
     View,
     Text,
@@ -11,41 +11,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import SongCard from '../components/SongCard';
 import Button from '../components/Button';
 import theme from '../theme';
-import { searchSongs } from '../api/itunes';
+import useSongSearch from '../lib/useSongSearch';
 
 export default function SearchScreen() {
-    const [query, setQuery] = useState('');
-    const [results, setResults] = useState([]);
-    const [status, setStatus] = useState('idle');
-    const [error, setError] = useState(null);
-
-    const runSearch = useCallback(async (term) => {
-        const trimmed = term.trim();
-
-        if (trimmed.length < 2) {
-            setResults([]);
-            setError(null);
-            setStatus('idle');
-            return;
-        }
-
-        setStatus('loading');
-        setError(null);
-
-        try {
-            const songs = await searchSongs(trimmed);
-            setResults(songs);
-            setStatus(songs.length ? 'success' : 'empty');
-        } catch (err) {
-            setResults([]);
-            setError(err.userMessage || 'Something went wrong. Please try again.');
-            setStatus('error');
-        }
-    }, []);
-
-    useEffect(() => {
-        runSearch(query);
-    }, [query, runSearch]);
+    const { query, setQuery, results, status, error, retry } = useSongSearch();
 
     function renderBody() {
         if (status === 'idle') {
@@ -74,7 +43,7 @@ export default function SearchScreen() {
             return (
                 <View style={styles.center}>
                     <Text style={styles.errorText}>{error}</Text>
-                    <Button title="Try again" onPress={() => runSearch(query)} />
+                    <Button title="Try again" onPress={retry} />
                 </View>
             );
         }
@@ -96,7 +65,7 @@ export default function SearchScreen() {
                 data={status === 'success' ? results : []}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <SongCard title={item.title} artist={item.artist} album={item.artist} />
+                    <SongCard title={item.title} artist={item.artist} album={item.album} />
                 )}
                 ListEmptyComponent={renderBody()}
                 keyboardShouldPersistTaps="handled"
@@ -145,7 +114,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
     errorText: {
-        ...theme.type.nody,
+        ...theme.type.body,
         color: theme.colors.text,
         textAlign: 'center',
     },
