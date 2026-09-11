@@ -59,10 +59,61 @@ export function estimateComparisons(n) {
     return Math.ceil(Math.log2(size + 1));
 }
 
-export function rescore() { throw new Error('placeholder'); }
-export function normalize() { throw new Error('placeholder'); }
-export function insertEntry() { throw new Error('placeholder'); }
-export function removeEntry() { throw new Error('placeholder'); }
+export function rescore(orderedEntries = []) { 
+    const out = [];
+    
+    SENTIMENT_ORDER.forEach((key) => {
+        const bucket = orderedEntries.filter((e) => e && e.sentiment === key);
+        const [low, high] = getSentiment(key).range;
+        const n = bucket.length;
+
+        bucket.forEach((entry, i) => {
+            let score;
+            if (n === 1) {
+                score = high - (high - low) * 0.15;
+            } else {
+                score = high - (high - low) * (i / (n - 1));
+            }
+            out.push({ ...entry, score: Math.round(score * 10) / 10 });
+        });
+    });
+
+    return out.map((entry, i) => ({ ...entry, rank: i + 1 }));
+}
+export function normalize(entries = []) { 
+    const ordered = [];
+
+    SENTIMENT_ORDER.forEach((key) => {
+        entries.forEach((e) => {
+            if (e && e.sentiment === key) ordered.push(e);
+        });
+    });
+
+    entries.forEach((e) => {
+        if (e && SENTIMENT_ORDER.indexOf(e.sentiment) === -1) {
+            ordered.push({ ...e, sentiment: 'fine'});
+        }
+    });
+
+    return rescore(ordered);
+}
+
+export function insertEntry(entries = [], entry, indexInBucket = 0) { 
+    const target = sentimentRank(entry.sentiment);
+
+    const before = entries.filter((e) => sentimentRank(e.sentiment) < target);
+    const after = entries.filter((e) => sentimentRank(e.sentiment) > target);
+    const bucket = bucketOf(entries, entry.sentiment);
+
+    const idx = Math.max(0, Math.min(bucket.length, indexInBucket));
+    bucket.splice(idx, 0, entry);
+
+    return rescore([ ...before, ...bucket, ...after]);
+}
+
+export function removeEntry(entries = [], entryId) { 
+    return rescore(entries.filter((e) => e.id !== entryId));
+}
 export function createSession() { throw new Error('placeholder'); }
 export function answer() { throw new Error('placeholder'); }
 export function undo() { throw new Error('placeholder'); }
