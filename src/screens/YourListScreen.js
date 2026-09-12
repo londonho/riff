@@ -4,8 +4,10 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import ScoreBadge from '../components/ScoreBadge';
 import theme from '../theme';
 import { libraryStats } from '../lib/ranking';
+import { useLibrary } from '../state/LibraryContext';
 
-export default function YourListScreen({ entries }) {
+export default function YourListScreen() {
+    const { entries } = useLibrary();
     const stats = libraryStats(entries);
 
     return (

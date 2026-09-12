@@ -11,17 +11,24 @@ import {
     undo,
     bucketOf,
 } from '../lib/ranking';
+import { useLibrary } from '../state/LibraryContext';
 
-export default function RankFlowScreen({ song, entries, onDone, onCancel }) {
+export default function RankFlowScreen({ song, onDone, onCancel }) {
+    const { entries, addSong } = useLibrary()
     const [step, setStep] = useState('sentiment');
     const [session, setSession] = useState(null);
+
+    function finish(sentiment, insertIndex) {
+        addSong(song, sentiment, insertIndex);
+        onDone();
+    }
 
     function chooseSentiment(key) {
         const bucket = bucketOf(entries, key);
         const next = createSession(song, key, bucket);
         setSession(next);
         if (next.finished) {
-            onDone(key, next.insertIndex);
+            finish(key, next.insertIndex);
         } else {
             setStep('compare');
         }
@@ -29,7 +36,7 @@ export default function RankFlowScreen({ song, entries, onDone, onCancel }) {
     function respond(choice) {
         const next = answer(session, choice);
         setSession(next);
-        if (next.finished) onDone(next.sentiment, next.insertIndex);
+        if (next.finished) finish(next.sentiment, next.insertIndex);
     }
 
     function goBack() {
