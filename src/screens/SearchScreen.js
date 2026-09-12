@@ -13,7 +13,7 @@ import Button from '../components/Button';
 import theme from '../theme';
 import useSongSearch from '../lib/useSongSearch';
 
-export default function SearchScreen() {
+export default function SearchScreen({ onSelectSong }) {
     const { query, setQuery, results, status, error, retry } = useSongSearch();
 
     function renderBody() {
@@ -65,7 +65,12 @@ export default function SearchScreen() {
                 data={status === 'success' ? results : []}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <SongCard title={item.title} artist={item.artist} album={item.album} />
+                    <SongCard 
+                        title={item.title} 
+                        artist={item.artist} 
+                        album={item.album}
+                        onPress={() => onSelectSong(item)}    
+                    />
                 )}
                 ListEmptyComponent={renderBody()}
                 keyboardShouldPersistTaps="handled"
