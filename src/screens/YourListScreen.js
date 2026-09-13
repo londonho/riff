@@ -1,6 +1,5 @@
 import React from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import ScoreBadge from '../components/ScoreBadge';
 import theme from '../theme';
 import { libraryStats } from '../lib/ranking';
@@ -11,7 +10,7 @@ export default function YourListScreen() {
     const stats = libraryStats(entries);
 
     return (
-        <SafeAreaView style={styles.screen}>
+        <View style={styles.screen}>
             <View style={styles.header}>
                 <Text style={theme.type.h1}>Your list</Text>
                 <Text style={styles.stats}>
@@ -43,7 +42,7 @@ export default function YourListScreen() {
                     </View>
                 }
             />
-        </SafeAreaView>
+        </View>
     );
 }
 

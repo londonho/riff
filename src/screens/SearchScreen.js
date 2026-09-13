@@ -7,13 +7,12 @@ import {
     ActivityIndicator,
     StyleSheet,
 } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import SongCard from '../components/SongCard';
 import Button from '../components/Button';
 import theme from '../theme';
 import useSongSearch from '../lib/useSongSearch';
 
-export default function SearchScreen({ onSelectSong }) {
+export default function SearchScreen({ navigation }) {
     const { query, setQuery, results, status, error, retry } = useSongSearch();
 
     function renderBody() {
@@ -51,7 +50,7 @@ export default function SearchScreen({ onSelectSong }) {
     }
 
     return (
-        <SafeAreaView style={styles.screen}>
+        <View style={styles.screen}>
             <TextInput
                 value={query}
                 onChangeText={setQuery}
@@ -69,14 +68,14 @@ export default function SearchScreen({ onSelectSong }) {
                         title={item.title} 
                         artist={item.artist} 
                         album={item.album}
-                        onPress={() => onSelectSong(item)}    
+                        onPress={() => navigation.navigate('RankFlow', { song: item })}    
                     />
                 )}
                 ListEmptyComponent={renderBody()}
                 keyboardShouldPersistTaps="handled"
                 contentContainerStyle={styles.listContent}
             />
-        </SafeAreaView>
+        </View>
     )
 }
 

@@ -13,14 +13,15 @@ import {
 } from '../lib/ranking';
 import { useLibrary } from '../state/LibraryContext';
 
-export default function RankFlowScreen({ song, onDone, onCancel }) {
-    const { entries, addSong } = useLibrary()
+export default function RankFlowScreen({ route, navigation }) {
+    const { song } = route.params;
+    const { entries, addSong } = useLibrary();
     const [step, setStep] = useState('sentiment');
     const [session, setSession] = useState(null);
 
     function finish(sentiment, insertIndex) {
         addSong(song, sentiment, insertIndex);
-        onDone();
+        navigation.navigate('Tabs', { screen: 'YourList'});
     }
 
     function chooseSentiment(key) {
@@ -50,7 +51,7 @@ export default function RankFlowScreen({ song, onDone, onCancel }) {
     return (
         <SafeAreaView style={styles.screen}>
             <View style={styles.topBar}>
-                <Pressable onPress={onCancel} hitSlop={12}>
+                <Pressable onPress={() => navigation.goBack()} hitSlop={12}>
                     <Text style={styles.cancel}>Cancel</Text>
                 </Pressable>
                 <Text style={styles.topTitle}>Rank song</Text>
