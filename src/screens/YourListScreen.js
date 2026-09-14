@@ -1,20 +1,30 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
+import { View, Text, FlatList, StyleSheet, Alert, Pressable } from 'react-native';
 import ScoreBadge from '../components/ScoreBadge';
 import theme from '../theme';
 import { libraryStats } from '../lib/ranking';
 import { useLibrary } from '../state/LibraryContext';
 
 export default function YourListScreen() {
-    const { entries } = useLibrary();
+    const { entries, remove } = useLibrary();
     const stats = libraryStats(entries);
 
+    function confirmRemove(entry) {
+        Alert.alert(
+            'Remove from your list?',
+            `${entry.song.title} — ${entry.song.artist}`,
+            [
+                { text: 'Cancel', style: 'cancel' },
+                { text: 'Remove', style: 'destructive', onPress: () => remove(entry.id) },
+            ],
+        );
+    }
     return (
         <View style={styles.screen}>
             <View style={styles.header}>
                 <Text style={theme.type.h1}>Your list</Text>
                 <Text style={styles.stats}>
-                    {stats.total} ranked · avg {stats.total ? stats.avg.toFixed(1) : '--'}
+                    {stats.total} ranked · avg {stats.total ? stats.avg.toFixed(1) : '--'} · hold a row to remove
                 </Text>
             </View>
 
@@ -23,16 +33,18 @@ export default function YourListScreen() {
                 keyExtractor={(item) => item.id}
                 contentContainerStyle={styles.list}
                 renderItem={({ item }) => (
-                    <View style={styles.row}>
-                        <Text style={styles.rank}>{item.rank}</Text>
-                        <View style={{ flex: 1 }}>
-                            <Text style={styles.title} numberOfLines={1}>{item.song.title}</Text>
-                            <Text style={styles.artist} numberOfLines={1}>
-                                {item.song.artist} · {item.song.album}
-                            </Text>
+                    <Pressable onLongPress={() => confirmRemove(item)} delayLongPress={350}>
+                        <View style={styles.row}>
+                            <Text style={styles.rank}>{item.rank}</Text>
+                            <View style={{ flex: 1 }}>
+                                <Text style={styles.title} numberOfLines={1}>{item.song.title}</Text>
+                                <Text style={styles.artist} numberOfLines={1}>
+                                    {item.song.artist} · {item.song.album}
+                                </Text>
+                            </View>
+                            <ScoreBadge score={item.score} sentiment={item.sentiment} />
                         </View>
-                        <ScoreBadge score={item.score} sentiment={item.sentiment} />
-                    </View>
+                    </Pressable>
                 )}
                 ListEmptyComponent={
                     <View style={styles.empty}>

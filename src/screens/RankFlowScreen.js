@@ -21,7 +21,7 @@ export default function RankFlowScreen({ route, navigation }) {
 
     function finish(sentiment, insertIndex) {
         addSong(song, sentiment, insertIndex);
-        navigation.navigate('Tabs', { screen: 'YourList'});
+        navigation.popTo('Tabs', { screen: 'YourList'});
     }
 
     function chooseSentiment(key) {

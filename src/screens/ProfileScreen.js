@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, Alert, Pressable } from 'react-native';
 import theme from '../theme';
 import ShareBar from '../components/ShareBar';
 import { useLibrary } from '../state/LibraryContext';
@@ -11,7 +11,7 @@ import {
 } from '../lib/ranking';
 
 export default function ProfileScreen() {
-    const { entries } = useLibrary();
+    const { entries, clear } = useLibrary();
 
     const stats = libraryStats(entries);
     const genres = tasteProfile(entries, 6);
@@ -70,6 +70,21 @@ export default function ProfileScreen() {
                         />
                     ))}
                 </Section>
+                <Pressable
+                    onPress={() =>
+                        Alert.alert(
+                            'Delete your whole list?',
+                            `All ${stats.total} ranked songs will be removed. This cannot be undone.`,
+                            [
+                                { text: 'Cancel', style: 'cancel' },
+                                { text: 'Delete everything', style: 'destructive', onPress: clear },
+                            ],
+                        )
+                    }
+                    style={styles.danger}
+                >
+                    <Text style={styles.dangerText}>Clear my list</Text>
+                </Pressable>
             </ScrollView>
     );
 }
@@ -151,5 +166,14 @@ const styles = StyleSheet.create({
         ...theme.type.body,
         color: theme.colors.textMuted,
         textAlign: 'center',
+    },
+    danger: {
+        alignItems: 'center',
+        paddingVertical: 16,
+    },
+    dangerText: {
+        ...theme.type.body,
+        color: '#D2543F',
+        fontWeight: '700',
     },
 });

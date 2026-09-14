@@ -4,13 +4,16 @@ import { SafeAreaProvider, initialWindowMetrics } from 'react-native-safe-area-c
 import theme from './src/theme';
 import { LibraryProvider } from './src/state/LibraryContext';
 import RootNavigator from './src/navigation/RootNavigator';
+import ErrorBoundary from './src/components/ErrorBoundary';
 
 export default function App() {
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <LibraryProvider>
-        <RootNavigator />
-      </LibraryProvider>
+      <ErrorBoundary>
+        <LibraryProvider>
+          <RootNavigator />
+        </LibraryProvider>
+      </ErrorBoundary>
       <StatusBar style="auto" />    
     </SafeAreaProvider>
   );

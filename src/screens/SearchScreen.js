@@ -11,10 +11,26 @@ import SongCard from '../components/SongCard';
 import Button from '../components/Button';
 import theme from '../theme';
 import useSongSearch from '../lib/useSongSearch';
+import { Alert } from 'react-native';
+import { findEntryBySongId } from '../lib/ranking';
+import { useLibrary } from '../state/LibraryContext';
 
 export default function SearchScreen({ navigation }) {
     const { query, setQuery, results, status, error, retry } = useSongSearch();
+    const { entries } = useLibrary();
 
+    function selectSong(song) {
+        const existing = findEntryBySongId(entries, song.id);
+        if (existing) {
+            Alert.alert(
+                'Already ranked',
+                `${song.title} is #${existing.rank} in your list, scored ${existing.score.toFixed(1)}.`,
+                [{ text: 'OK' }],
+            );
+            return;
+        }
+        navigation.navigate('RankFlow', { song });
+    }
     function renderBody() {
         if (status === 'idle') {
             return (
@@ -68,7 +84,7 @@ export default function SearchScreen({ navigation }) {
                         title={item.title} 
                         artist={item.artist} 
                         album={item.album}
-                        onPress={() => navigation.navigate('RankFlow', { song: item })}    
+                        onPress={() => selectSong(item)}    
                     />
                 )}
                 ListEmptyComponent={renderBody()}
