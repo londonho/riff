@@ -3,7 +3,8 @@ import { View, Text, ActivityIndicator, StyleSheet } from 'react-native';
 import { NavigationContainer, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-
+import FriendsScreen from '../screens/FriendsScreen';
+import FriendCompareScreen from '../screens/FriendCompareScreen';
 import SearchScreen from '../screens/SearchScreen';
 import YourListScreen from '../screens/YourListScreen';
 import ProfileScreen from '../screens/ProfileScreen';
@@ -66,6 +67,13 @@ function Tabs() {
                     tabBarIcon: ({ focused }) => <TabIcon emoji="👤" focused={focused} />,
                 }}
             />
+            <Tab.Screen
+                name="Friends"
+                component={FriendsScreen}
+                options={{
+                    tabBarIcon: ({ focused }) => <TabIcon emoji="👥" focused={focused} />,
+                }}
+            />
         </Tab.Navigator>
     );
 }
@@ -93,6 +101,11 @@ export default function RootNavigator() {
                     name="RankFlow"
                     component={RankFlowScreen}
                     options={{ presentation: 'modal', headerShown: false }}
+                />
+                <Stack.Screen
+                    name="FriendCompare"
+                    component={FriendCompareScreen}
+                    options={{ title: 'Your match' }}
                 />
             </Stack.Navigator>
         </NavigationContainer>
